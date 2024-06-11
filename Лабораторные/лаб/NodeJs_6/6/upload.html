@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Загрузка изображения черепашки-ниндзя</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f4f4f4;
+      }
+      h1 {
+        color: #333;
+        text-align: center;
+      }
+      form {
+        background-color: white;
+        max-width: 500px;
+        margin: 20px auto;
+        padding: 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+      }
+      label {
+        font-weight: bold;
+      }
+      input[type="text"],
+      input[type="file"] {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+      }
+      button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: #128934;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #10752d;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Загрузка изображения</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+      <label for="turtleId">Идентификатор черепашки-ниндзя:</label>
+      <input type="text" id="turtleId" name="turtleId" required /><br /><br />
+      <label for="image">Выберите изображение:</label>
+      <input
+        type="file"
+        id="image"
+        name="image"
+        accept="image/*"
+        required
+      /><br /><br />
+      <button type="submit">Загрузить изображение</button>
+    </form>
+  </body>
+</html>

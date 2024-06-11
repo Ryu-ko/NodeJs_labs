@@ -1,0 +1,16 @@
+{
+  "dependencies": {
+    "m05_sts": "^1.0.1",
+    "nodemailer": "^6.9.13",
+    "nodemailer-smtp-transport": "^2.7.4"
+  },
+  "name": "lab5",
+  "description": "``` mkdir m05_XXX cd m05_XXX ``` ### 2)\tСоздайте файл package.json для вашего пакета и укажите в нем некоторые данные, например: ``` {   \"name\": \"m05_sts\",   \"version\": \"1.0.1\",   \"description\": \"\",   \"main\": \"m05_STS.js\",   \"scripts\": {     \"test\": \"echo \\\"Error: no test specified\\\" && exit 1\"   },   \"keywords\": [],   \"author\": \"Tatsiana Shishova\",   \"license\": \"ISC\",",
+  "version": "1.0.0",
+  "main": "05-02.js",
+  "scripts": {
+    "test": "hallo-meow"
+  },
+  "author": "",
+  "license": "ISC"
+}

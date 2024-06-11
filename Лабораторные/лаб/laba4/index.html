@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HTTP Requests</title>
+  </head>
+  <body>
+    <h1>HTTP Requests</h1>
+
+    <h2>GET Request</h2>
+    <button onclick="getData()">Get All Data</button>
+    <div id="getData"></div>
+
+    <h2>POST Request</h2>
+    <label for="postName">Name:</label>
+    <input type="text" id="postName" />
+    <label for="postBday">Birthday:</label>
+    <input type="text" id="postBday" />
+    <button onclick="postData()">Submit</button>
+
+    <h2>PUT Request</h2>
+    <label for="putId">ID:</label>
+    <input type="text" id="putId" />
+    <label for="putName">Name:</label>
+    <input type="text" id="putName" />
+    <label for="putBday">Birthday:</label>
+    <input type="text" id="putBday" />
+    <button onclick="putData()">Update</button>
+
+    <h2>DELETE Request</h2>
+    <label for="deleteId">ID:</label>
+    <input type="text" id="deleteId" />
+    <button onclick="deleteData()">Delete</button>
+
+    <script>
+      async function getData() {
+        try {
+          const response = await fetch("/api/db");
+          const data = await response.json();
+          document.getElementById("getData").innerText = JSON.stringify(
+            data,
+            null,
+            2
+          );
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }
+
+      async function postData() {
+        try {
+          const name = document.getElementById("postName").value;
+          const bday = document.getElementById("postBday").value;
+          const response = await fetch("/api/db", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ name, bday }),
+          });
+          const data = await response.json();
+          console.log("Inserted data:", data);
+        } catch (error) {
+          console.error("Error posting data:", error);
+        }
+      }
+
+      async function putData() {
+        try {
+          const id = document.getElementById("putId").value;
+          const name = document.getElementById("putName").value;
+          const bday = document.getElementById("putBday").value;
+          const response = await fetch(`/api/db?id=${id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ name, bday }),
+          });
+          const data = await response.json();
+          console.log("Updated data:", data);
+        } catch (error) {
+          console.error("Error updating data:", error);
+        }
+      }
+
+      async function deleteData() {
+        try {
+          const id = document.getElementById("deleteId").value;
+          const response = await fetch(`/api/db?id=${id}`, {
+            method: "DELETE",
+          });
+          const data = await response.json();
+          console.log("Deleted data:", data);
+        } catch (error) {
+          console.error("Error deleting data:", error);
+        }
+      }
+    </script>
+  </body>
+</html>

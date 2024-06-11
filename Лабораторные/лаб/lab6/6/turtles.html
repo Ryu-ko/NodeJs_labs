@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turtles Information</title>
+    <style>
+        body {
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            margin: 20px;
+            background-color: #ffffff;
+        }
+        .turtle-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+        }
+        .turtle-card {
+            background-color: #a1cdda; /* медовый цвет */
+            border: 1px solid #85f1ff; /* близкий к цвету меда */
+            padding: 15px;
+            width: 300px;
+            margin: 10px 0;
+            border-radius: 30px;
+        }
+        .turtle-card img {
+            width: 100%;
+            height: auto;
+        }
+        .turtle-card-content {
+            padding: 15px;
+        }
+        .pagination {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .pagination button {
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 0 10px;
+            background-color: #ffd000;
+            color: rgb(0, 0, 0);
+            border: none;
+
+            border-radius: 30px;
+
+        }
+        .pagination button:disabled {
+            background-color: #ccc;
+        }
+    </style>
+    
+</head>
+<body>
+<div class="turtle-container"></div>
+<div class="pagination">
+    <button id="prevButton" onclick="previousPage()" disabled>Previous</button>
+    <button id="nextButton" onclick="nextPage()" disabled>Next</button>
+</div>
+<script>
+    let currentPage = 0;
+    let totalPages = 0;
+    const turtlesPerPage = 3;
+
+    function displayTurtles(page, data) {
+        const startIndex = page * turtlesPerPage;
+        const endIndex = startIndex + turtlesPerPage;
+        const turtleContainer = document.querySelector('.turtle-container');
+        turtleContainer.innerHTML = '';
+        data.slice(startIndex, endIndex).forEach(turtle => {
+            const turtleDiv = document.createElement('div');
+            turtleDiv.classList.add('turtle-card');
+            turtleDiv.innerHTML = `
+                    <img src="${turtle.image}" alt="${turtle.name}">
+                    <div class="turtle-card-content">
+                        <h2>${turtle.name}</h2>
+                        <p>Color: ${turtle.color}</p>
+                    </div>
+                `;
+            turtleContainer.appendChild(turtleDiv);
+        });
+
+        document.getElementById('prevButton').disabled = currentPage === 0;
+        document.getElementById('nextButton').disabled = currentPage === totalPages - 1;
+    }
+
+    function previousPage() {
+        if (currentPage > 0) {
+            currentPage--;
+            fetchTurtles(currentPage);
+        }
+    }
+
+    function nextPage() {
+        if (currentPage < totalPages - 1) {
+            currentPage++;
+            fetchTurtles(currentPage);
+        }
+    }
+
+    function fetchTurtles(page) {
+        fetch(`/api/turtles?page=${page}`)
+            .then(response => response.json())
+            .then(data => {
+                displayTurtles(page, data);
+            })
+            .catch(error => console.error('Error fetching turtles:', error));
+    }
+
+
+    window.onload = function() {
+        fetch('/api/turtles')
+            .then(response => response.json())
+            .then(data => {
+                totalPages = Math.ceil(data.length / turtlesPerPage);
+                fetchTurtles(currentPage);
+            })
+            .catch(error => console.error('Error fetching turtles:', error));
+    };
+</script>
+</body>
+</html>

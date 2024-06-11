@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chat</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Times New Roman', Times, serif; 
+            background-color: #f9ece3; 
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 400px; 
+            border: 2px solid #e68a00; 
+            padding: 20px; 
+            background-color: #fff7f0; 
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #e68a00; 
+        }
+
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px; 
+        }
+
+        #username {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 2px solid #e68a00; 
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #e68a00; 
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 16px; 
+            transition: background-color 0.3s ease;
+            margin-bottom: 10px; 
+        }
+
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        #messages-container {
+            height: 300px;
+        
+            overflow-y: auto;
+            border-bottom: 2px solid #e68a00; 
+            margin-bottom: 20px;
+        }
+
+        #messages {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: #f0f0f0;
+        }
+
+        #message {
+            width: calc(100% - 40px);
+            padding: 10px;
+            border: 2px solid #e68a00; 
+            border-radius: 5px;
+            font-size: 16px; 
+        }
+        .Lol{
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Chat</h1>
+    <main>
+        <input type="text" id="username" placeholder="Enter your name"/>
+        <button id="joinButton" onclick="joinChat()">Join Chat</button>
+    </main>
+    <div id="messages-container">
+        <ul id="messages"></ul>
+    </div>
+    <input id="message" autocomplete="off" disabled>
+    <button id="sendButton" onclick="sendMessage()" disabled>Send</button>
+    <button id="leaveButton" onclick="leaveChat()" disabled>Leave Chat</button>
+</div>
+
+<script src="https://cdn.socket.io/4.1.2/socket.io.min.js"></script>
+<script>
+    let socket;
+    let messageListener;
+
+    const sendMessage = () => {
+        let message = document.getElementById('message').value.trim(); 
+        if (message) {
+            socket.emit('message', message);
+            document.getElementById('message').value = '';
+        }
+    };
+
+    function joinChat() {
+        let username = document.getElementById('username').value.trim(); 
+
+        if (username) {
+            socket = io('http://localhost:4000');
+
+            socket.on('connect', () => {
+                socket.emit('joinRoom', { username });
+                document.getElementById('message').removeAttribute('disabled');
+                document.getElementById('sendButton').removeAttribute('disabled');
+                document.getElementById('leaveButton').removeAttribute('disabled');
+                document.getElementById('joinButton').setAttribute('disabled', 'disabled');
+
+                messageListener = (data) => {
+                    console.log('Message from the server:', data);
+
+                    let messages = document.getElementById('messages');
+                    messages.innerHTML += `<div class="Lol"> <li>${data.user}: ${data.text}  <div>${data.time}</div> </li> </div>`;
+                    messages.scrollTop = messages.scrollHeight; 
+                };
+                socket.on('message', messageListener);
+            });
+        } else {
+            alert("Please enter your name before joining the chat.");
+        }
+    }
+
+    function leaveChat() {
+        socket.emit('leaveRoom');
+        document.getElementById('message').setAttribute('disabled', 'disabled');
+        document.getElementById('sendButton').setAttribute('disabled', 'disabled');
+        document.getElementById('leaveButton').setAttribute('disabled', 'disabled');
+        document.getElementById('joinButton').removeAttribute('disabled');
+
+        if (messageListener) {
+            socket.off('message', messageListener);
+        }
+    }
+</script>
+</body>
+</html>
